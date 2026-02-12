@@ -14,7 +14,7 @@ Mariposa is an all-in-one SaaS platform built to streamline business management 
 
 ---
 
-## 🛠 Our Services
+## 🛠 Servecies by Mariposa
 *Documentation for individual services is updated as they are released. Below is the current directory of available tools:*
 
 ### 1. [Service Name Here]
@@ -51,7 +51,5 @@ This documentation serves as a step-by-step roadmap. Whether you are setting up 
 ## 📞 Support & Resources
 If you encounter issues or have questions regarding your proprietary account:
 * **Official Website:** [gpomariposa.com](https://app.gpomariposa.com)
-* **Contact Support:** [Add Contact Method/Email]
 
 ---
-*© 2024 Mariposa. All rights reserved. Proprietary Platform Documentation.*
