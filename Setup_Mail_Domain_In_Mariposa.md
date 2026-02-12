@@ -27,6 +27,9 @@ This guide walks you through the complete process of adding and configuring a cu
 ## Step 2: Add a Branded Domain in Business Profile
 
 1. In the same left vertical navbar, scroll to the **bottom** and click **Settings**.  
+
+<img src="images/Domain_Setup_fg2.png">
+
 2. You will be taken to your profile settings dashboard.  
 3. From the settings navigation bar (left side), click **BusinessProfile**.  
 4. On the Business Profile page, locate the **Branded Domain** input field.  
