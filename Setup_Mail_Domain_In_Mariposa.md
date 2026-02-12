@@ -32,7 +32,7 @@ This guide walks you through the complete process of adding and configuring a cu
 
 2. You will be taken to your profile settings dashboard.  
 
-<img src="imges/Domain_Setup_fg3.png">
+<img src="images/Domain_Setup_fg3.png">
 
 3. From the settings navigation bar (left side), click **BusinessProfile**.  
 4. On the Business Profile page, locate the **Branded Domain** input field.  
