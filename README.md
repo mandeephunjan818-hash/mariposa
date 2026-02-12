@@ -42,7 +42,7 @@ Mariposa is optimized for:
 ## 📖 How to Use This Documentation
 This documentation serves as a step-by-step roadmap. Whether you are setting up your account for the first time or looking to explore advanced features, you can find the relevant sections below:
 
-1. **Getting Started:** [Link to Setup Guide]
+1. **Getting Started:** [Domain Setup Guide](https://github.com/mandeephunjan818-hash/mariposa/blob/main/Setup_Mail_Domain_In_Mariposa.md)
 2. **Feature Tutorials:** [Link to Tutorials]
 3. **FAQs:** [Link to Frequently Asked Questions]
 
@@ -52,4 +52,3 @@ This documentation serves as a step-by-step roadmap. Whether you are setting up 
 If you encounter issues or have questions regarding your proprietary account:
 * **Official Website:** [gpomariposa.com](https://app.gpomariposa.com)
 
----
