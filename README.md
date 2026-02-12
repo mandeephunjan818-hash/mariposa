@@ -1,4 +1,4 @@
-# Mariposa SaaS Platform | Official Documentation
+# Mariposa SaaS Platform Documentation
 
 [![Platform Link](https://img.shields.io)](https://app.gpomariposa.com)
 [![Documentation](https://img.shields.io)](#)
