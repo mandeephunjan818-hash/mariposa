@@ -15,7 +15,7 @@ This guide walks you through the complete process of adding and configuring a cu
 
 ## Step 1: Switch to Your Account
 
-![](image/Domain_Setup_fg1.png)
+<img src="images/settings.png">
 
 1. Open the Mariposa application in your browser.  
 2. On the **vertical navigation bar** (left side), locate and click the **Click here** button – it is the very first button at the top of the navbar.  
