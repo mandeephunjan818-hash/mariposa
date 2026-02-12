@@ -1,4 +1,3 @@
-## Documentation for adding the Domain in the Mariposa
 # Domain Setup Guide for Mariposa SaaS Platform
 
 This guide walks you through the complete process of adding and configuring a custom domain for email services on the Mariposa platform. By the end of this documentation, you will have a verified, dedicated email domain ready to send and receive messages through your Mariposa inbox.
@@ -15,6 +14,8 @@ This guide walks you through the complete process of adding and configuring a cu
 ---
 
 ## Step 1: Switch to Your Account
+
+(image/Domain_Setup_fg1.png)
 
 1. Open the Mariposa application in your browser.  
 2. On the **vertical navigation bar** (left side), locate and click the **Click here** button – it is the very first button at the top of the navbar.  
