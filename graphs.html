@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      Graph Navigator
+    </title>
+    <script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+  
+<style>
+#graph{
+  
+  height:'100vh';
+  width:'100%';
+  position:'absolute';
+  left:'0';
+  top:'0';
+
+}
+</style>
+
+  </head>
+  <div id="graph"></div>
+  <script>
+    var graph = cytoscape({
+      container: document.getElementById('graph'),
+        elements: [
+          { data: { id: 'a' } },
+          { data: { id: 'b' } },
+          {
+            data: {
+              id: 'ab',
+              source: 'a',
+              target: 'b'
+            }
+          }]
+    })
+  </script>
+
+</html>
