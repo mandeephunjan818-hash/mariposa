@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Mariposa Domain Setup – Categorized Graph</title>
+    <!-- Load scripts in correct order -->
+    <script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+    <script src="https://unpkg.com/layout-base@2.0.1/layout-base.js"></script>
+    <script src="https://unpkg.com/cose-base@2.2.0/cose-base.js"></script>
+    <script src="https://unpkg.com/cytoscape-fcose@2.2.0/cytoscape-fcose.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+        #cy {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #fafafa;
+        }
+        .info {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #333;
+            pointer-events: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div id="cy"></div>
+    <div class="info">
+        <span style="background:#e1f5e0; padding:2px 6px; border-radius:4px;">📘 Documentation</span>
+        <span style="background:#ffe0b0; padding:2px 6px; border-radius:4px;">🧭 Navbar</span>
+        <span style="background:#ffd0d0; padding:2px 6px; border-radius:4px;">📊 Dashboard</span>
+        <span style="background:#d0d0ff; padding:2px 6px; border-radius:4px;">📄 Pages</span>
+        <span style="border:2px dashed #f39c12; padding:2px 6px; border-radius:4px;">✏️ Input field</span>
+    </div>
+
+    <script>
+        (function() {
+            const cy = cytoscape({
+                container: document.getElementById('cy'),
+                elements: [
+                    // ========== DOCUMENTATION NODES (type: 'doc') ==========
+                    { data: { id: 'n1', label: 'Domain Integration\n& Email Service', type: 'Main-doc', url: '#' } },
+                    { data: { id: 'updateInfoBtn', label: 'Update Information', type: 'doc', url: '#' } },
+                    { data: { id: 'createDedicatedDomainBtn', label: 'Create dedicated domain', type: 'doc', url: '#' } },
+                    { data: { id: 'dedicatedDomainInput', label: 'Enter domain name', type: 'doc', subtype: 'input', url: '#' } },
+                    { data: { id: 'dnsRecords', label: 'DNS Records (TXT, MX, …)', type: 'doc', url: '#' } },
+                    { data: { id: 'autoConfigureBtn', label: 'Auto‑configure DNS', type: 'doc', url: '#' } },
+                    { data: { id: 'verifyBtn', label: 'Verify', type: 'doc', url: '#' } },
+                    { data: { id: 'verifiedStatus', label: '✅ Verified', type: 'doc', url: '#' } },
+                    { data: { id: 'contactsPage', label: 'Contacts / Mailbox', type: 'doc', url: '#' } },
+                    { data: { id: 'contactName', label: 'Contact (email composer)', type: 'doc', url: '#' } },
+
+                    // ========== NAVBAR CONTAINERS (type: 'navbar') ==========
+                    { data: { id: 'nav1', label: 'Left Navbar', type: 'navbar' } },
+                    { data: { id: 'Nav2', label: 'Profile Navbar', type: 'navbar' } },
+                    { data: { id: 'Nav3', label: 'Profile Settings Navbar', type: 'navbar' } },
+                    { data: { id: 'ProfileDashboardNav2', label: 'Profile Dashboard Navbar', type: 'navbar', parent: 'ProfileDashboard' } },
+                    { data: { id: 'ProfileSettingsDashboardNav3', label: 'Profile Settings Navbar', type: 'navbar', parent: 'ProfileSettingsDashboard' } },
+                    { data: { id: 'NameNavN2', label: 'Main Dashboard Navbar', type: 'navbar', parent: 'n2' } },
+
+                    // ----- Navbar name nodes (also type: 'navbar') -----
+                    { data: { id: 'NameNav1', label: 'Dashboard Navbar', type: 'navbar', parent: 'nav1' } },
+                    { data: { id: 'Nav2Name', label: 'Profile Navbar', type: 'navbar', parent: 'Nav2' } },
+                    { data: { id: 'Nav3Name', label: 'Profile Settings NavBar', type: 'navbar', parent: 'Nav3' } },
+
+                    // ----- Navbar links containers (parent for actual links) -----
+                    { data: { id: 'nav1Links', label: 'Links', type: 'navbar', parent: 'nav1' } },
+                    { data: { id: 'Nav2Links', label: 'Links', type: 'navbar', parent: 'Nav2' } },
+                    { data: { id: 'Nav3Links', label: 'Links', type: 'navbar', parent: 'Nav3' } },
+
+                    // ----- Actual navbar links (children of links containers) -----
+                    { data: { id: 'nav1link1', label: 'Click here to switch', type: 'navbar', parent: 'nav1Links' } },
+                    { data: { id: 'nav1link1Users', label: 'Organization Profiles', type: 'navbar', parent: 'nav1Links' } },
+                    { data: { id: 'Nav2Link1', label: 'Settings', type: 'navbar', parent: 'Nav2Links' } },
+                    { data: { id: 'Nav2Link2', label: 'Contacts', type: 'navbar', parent: 'Nav2Links' } },
+                    { data: { id: 'Nav3Link1', label: 'Business Profile', type: 'navbar', parent: 'Nav3Links' } },
+                    { data: { id: 'Nav3Link3', label: 'Back to Profile', type:'navbar', parent:'Nav3Links' } },
+                    { data: { id: 'emailServices', label: 'Email Services', type: 'navbar', parent: 'Nav3Links' } },
+
+                    // ========== DASHBOARD NODES (type: 'dashboard') ==========
+                    { data: { id: 'n2', label: 'Main Dashboard Container', type: 'dashboard' } },
+                    { data: { id: 'ProfileDashboard', label: 'Profile Dashboard', type: 'dashboard' } },
+                    { data: { id: 'ProfileSettingsDashboard', label: 'Profile Settings Dashboard', type: 'dashboard' } },
+
+                    // Dashboard name nodes
+                    { data: { id: 'NameN2', label: 'Main Dashboard', type: 'dashboard', parent: 'n2' } },
+                    { data: { id: 'ProfileDashboardName', label: 'Profile Dashboard', type: 'dashboard', parent: 'ProfileDashboard' } },
+                    { data: { id: 'ProfileSettingsDashboardName', label: 'Profile Settings Dashboard', type: 'dashboard', parent: 'ProfileSettingsDashboard' } },
+
+                    // ========== PAGE NODES (type: 'pages') ==========
+                    // (none yet, but we can add if needed; for now, some doc nodes might be considered pages)
+
+                    // ========== EDGES ==========
+                    // Existing edges (refined labels)
+                    { data: { id: 'e1', source: 'n1', target: 'NameNavN2', label: 'go to dashboard page' } },
+                    { data: { id: 'e2', source: 'NameNavN2', target: 'nav1link1', label: 'click here to switch' } },
+                    { data: { id: 'e3', source: 'nav1link1', target: 'nav1link1Users', label: 'select organization profile' } },
+                    { data: { id: 'e4', source: 'nav1link1Users', target: 'ProfileDashboardNav2', label: 'go to profile dashboard' } },
+                    { data: { id: 'e5', source: 'ProfileDashboardNav2', target: 'Nav2Link1', label: 'go to settings' } },
+                    { data: { id: 'e6', source: 'Nav2Link1', target: 'ProfileSettingsDashboardNav3', label: 'go to settings navbar' } },
+                    { data: { id: 'e7', source: 'ProfileSettingsDashboardNav3', target: 'Nav3Link1', label: 'go to Business Profile' } },
+
+                    // New edges for Steps 3‑6
+                    { data: { id: 'e8', source: 'Nav3Link1', target: 'updateInfoBtn', label: 'click Update information' } },
+                    { data: { id: 'e9', source: 'updateInfoBtn', target: 'emailServices', label: 'go to Email services' } },
+                    { data: { id: 'e10', source: 'emailServices', target: 'createDedicatedDomainBtn', label: 'Create dedicated domain' } },
+                    { data: { id: 'e11', source: 'createDedicatedDomainBtn', target: 'dedicatedDomainInput', label: 'enter domain' } },
+                    { data: { id: 'e12', source: 'dedicatedDomainInput', target: 'dnsRecords', label: 'configure DNS' } },
+                    { data: { id: 'e13', source: 'dnsRecords', target: 'autoConfigureBtn', label: 'auto‑configure' } },
+                    { data: { id: 'e14', source: 'autoConfigureBtn', target: 'verifyBtn', label: 'verify' } },
+                    { data: { id: 'e15', source: 'verifyBtn', target: 'verifiedStatus', label: 'success' } },
+                    { data: { id: 'e16', source: 'verifiedStatus', target: 'Nav3Link3', label: 'go to Settings nav bar' } },
+                    { data: { id: 'e18', source: 'Nav3Link3', target:'ProfileDashboardNav2', label:'go to profile page ' } },
+                    { data: { id: 'e17', source: 'contactsPage', target: 'contactName', label: 'compose email' } },
+                    { data: { id: 'e19', source: 'ProfileDashboardNav2', target: 'Nav2Link2' , label:'go to Profile Navbar' } },
+                    { data: { id: 'e20', source: 'Nav2Link2', target:'contactsPage', label:'go to the contacts page ' } },
+                ],
+
+                style: [
+                    // ----- BASE NODE STYLE (fallback) -----
+                    {
+                        selector: 'node',
+                        style: {
+                            'shape': 'round-rectangle',
+                            'text-halign': 'center',
+                            'text-valign': 'center',
+                            'label': 'data(label)',
+                            'width': 'label',
+                            'height': 'label',
+                            'padding': '8px',
+                            'text-wrap': 'wrap',
+                            'text-max-width': '140px',
+                            'font-size': '11px',
+                            'color': '#2c3e50',
+                            'background-color': '#ecf0f1',
+                            'border-width': 1,
+                            'border-color': '#bdc3c7'
+                        }
+                    },
+                    {
+                      selector:'node[type = "Main-doc"]',
+                      style:{
+                        'background-color':'#FF0000',
+                      }
+                    },
+                    // ----- TYPE‑BASIC COLORS -----
+                    {
+                        selector: 'node[type = "doc"]',
+                        style: {
+                            'background-color': '#e1f5e0',  // light green
+                            'border-color': '#2e7d32'
+                        }
+                    },
+                    {
+                        selector: 'node[type = "navbar"]',
+                        style: {
+                            'background-color': '#ffe0b0',  // light orange
+                            'border-color': '#bf8f00'
+                        }
+                    },
+                    {
+                        selector: 'node[type = "dashboard"]',
+                        style: {
+                            'background-color': '#ffd0d0',  // light red
+                            'border-color': '#c62828'
+                        }
+                    },
+                    {
+                        selector: 'node[type = "pages"]',
+                        style: {
+                            'background-color': '#d0d0ff',  // light blue
+                            'border-color': '#283593'
+                        }
+                    },
+                    // ----- INPUT FIELD OVERRIDE (subtype) -----
+                    {
+                        selector: 'node[subtype = "input"]',
+                        style: {
+                            'border-width': 3,
+                            'border-style': 'dashed',
+                            'border-color': '#f39c12',
+                            'background-color': '#fff3e0'
+                        }
+                    },
+                    // ----- PARENT NODES (containers) get a distinct border and slight transparency -----
+                    {
+                        selector: ':parent',
+                        style: {
+                            'background-opacity': 0.2,
+                            'border-width': 2,
+                            'border-color': '#2c3e50',
+                            'font-weight': 'bold',
+                            'text-valign': 'top',
+                            'text-halign': 'center',
+                            'padding': '20px'
+                        }
+                    },
+                    // ----- EDGE STYLE -----
+                    {
+                        selector: 'edge',
+                        style: {
+                            'width': 2,
+                            'line-color': '#a0a0a0',
+                            'target-arrow-color': '#a0a0a0',
+                            'target-arrow-shape': 'triangle',
+                            'curve-style': 'bezier',
+                            'label': 'data(label)',
+                            'font-size': '9px',
+                            'color': '#2c3e50',
+                            'text-background-color': '#ffffff',
+                            'text-background-opacity': 1,
+                            'text-background-padding': '2px',
+                            'text-border-color': '#cccccc',
+                            'text-border-width': 1,
+                            'text-border-opacity': 0.5,
+                            'text-valign': 'top',
+                            'text-margin-y': -8
+                        }
+                    }
+                ],
+
+                layout: {
+                  name: 'fcose',
+                  quality: 'default',
+                  // Increase edge length to spread nodes vertically
+                  idealEdgeLength: 150,
+                  // Reduce gravity to stop everything from clumping in the center
+                  gravity: 0.5,
+                  gravityRange: 5.0,
+                  // Keep compound gravity moderate to keep children near parents
+                  gravityCompound: 1.0,
+                  gravityRangeCompound: 8.0,
+                  // Pack children inside parents neatly
+                  tile: true,
+                  nestingFactor: 0.2,
+                  // Prevent random initial placement (use incremental improvement)
+                  randomize: false,
+                  // These help with label sizing
+                  nodeDimensionsIncludeLabels: true,
+                  uniformNodeDimensions: false
+              }
+            });
+
+            // Click handler – open URL if exists, else show info
+            cy.on('tap', 'node', function(evt) {
+                const node = evt.target;
+                const url = node.data('url');
+                if (url && url !== '#') {
+                    window.open(url, '_blank');
+                } else {
+                    alert('Node: ' + node.data('label') + '\nType: ' + node.data('type') + '\nID: ' + node.id());
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
