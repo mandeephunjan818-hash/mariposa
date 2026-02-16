@@ -95,13 +95,13 @@
                     { data: { id: 'emailServices', label: 'Email Services', type: 'navbar', parent: 'Nav3Links' } },
 
                     // ========== DASHBOARD NODES (type: 'dashboard') ==========
-                    { data: { id: 'n2', label: 'Main Dashboard Container', type: 'dashboard' } },
+                    { data: { id: 'n2', label: 'Main Dashboard Container', type: 'dashboard', image:'https://raw.githubusercontent.com/mandeephunjan818-hash/mariposa/refs/heads/main/images/Domain_Setup_fg1.png' } },
                     { data: { id: 'ProfileDashboard', label: 'Profile Dashboard', type: 'dashboard' } },
                     { data: { id: 'ProfileSettingsDashboard', label: 'Profile Settings Dashboard', type: 'dashboard' } },
 
                     // Dashboard name nodes
                     { data: { id: 'NameN2', label: 'Main Dashboard', type: 'dashboard', parent: 'n2' } },
-                    { data: { id: 'ProfileDashboardName', label: 'Profile Dashboard', type: 'dashboard', parent: 'ProfileDashboard' } },
+                    { data: { id: 'ProfileDashboardName', label:'Profile Dashboard', type:'dashboard', parent:'ProfileDashboard' } },
                     { data: { id: 'ProfileSettingsDashboardName', label: 'Profile Settings Dashboard', type: 'dashboard', parent: 'ProfileSettingsDashboard' } },
 
                     // ========== PAGE NODES (type: 'pages') ==========
@@ -178,8 +178,12 @@
                     {
                         selector: 'node[type = "dashboard"]',
                         style: {
-                            'background-color': '#ffd0d0',  // light red
-                            'border-color': '#c62828'
+                            'background-image':'data(image)',
+                            'background-fit':'contain',
+                            'background-image-opacity':1,
+                            'background-opacity':0,
+                            'backgound-clip':'none',
+                          
                         }
                     },
                     {
@@ -225,7 +229,7 @@
                             'font-size': '9px',
                             'color': '#2c3e50',
                             'text-background-color': '#ffffff',
-                            'text-background-opacity': 1,
+                            'text-background-opacity':1,
                             'text-background-padding': '2px',
                             'text-border-color': '#cccccc',
                             'text-border-width': 1,
@@ -236,26 +240,68 @@
                     }
                 ],
 
-                layout: {
-                  name: 'fcose',
-                  quality: 'default',
-                  // Increase edge length to spread nodes vertically
-                  idealEdgeLength: 150,
-                  // Reduce gravity to stop everything from clumping in the center
-                  gravity: 0.5,
-                  gravityRange: 5.0,
-                  // Keep compound gravity moderate to keep children near parents
-                  gravityCompound: 1.0,
-                  gravityRangeCompound: 8.0,
-                  // Pack children inside parents neatly
-                  tile: true,
-                  nestingFactor: 0.2,
-                  // Prevent random initial placement (use incremental improvement)
-                  randomize: false,
-                  // These help with label sizing
-                  nodeDimensionsIncludeLabels: true,
-                  uniformNodeDimensions: false
-              }
+              layout: {
+    name: 'fcose',
+    quality: 'proof',
+    randomize: false,
+    animate: true,
+    
+    // Relative placement with larger gaps for main flow
+    relativePlacementConstraint: [
+        { left: 'n1', right: 'NameNavN2', gap: 160 },
+        { left: 'NameNavN2', right: 'nav1link1', gap: 140 },
+        { left: 'nav1link1', right: 'nav1link1Users', gap: 140 },
+        { left: 'nav1link1Users', right: 'ProfileDashboardNav2', gap: 140 },
+        { left: 'ProfileDashboardNav2', right: 'Nav2Link1', gap: 140 },
+        { left: 'Nav2Link1', right: 'ProfileSettingsDashboardNav3', gap: 140 },
+        { left: 'ProfileSettingsDashboardNav3', right: 'Nav3Link1', gap: 140 },
+        { left: 'Nav3Link1', right: 'updateInfoBtn', gap: 140 },
+        { left: 'updateInfoBtn', right: 'emailServices', gap: 140 },
+        { left: 'emailServices', right: 'createDedicatedDomainBtn', gap: 140 },
+        { left: 'createDedicatedDomainBtn', right: 'dedicatedDomainInput', gap: 140 },
+        { left: 'dedicatedDomainInput', right: 'dnsRecords', gap: 140 },
+        { left: 'dnsRecords', right: 'autoConfigureBtn', gap: 140 },
+        { left: 'autoConfigureBtn', right: 'verifyBtn', gap: 140 },
+        { left: 'verifyBtn', right: 'verifiedStatus', gap: 140 }
+    ],
+    
+    // Alignment constraint to keep horizontal line
+    alignmentConstraint: {
+        horizontal: [['n1', 'NameNavN2', 'nav1link1', 'nav1link1Users', 'ProfileDashboardNav2', 'Nav2Link1', 'ProfileSettingsDashboardNav3', 'Nav3Link1', 'updateInfoBtn', 'emailServices', 'createDedicatedDomainBtn', 'dedicatedDomainInput', 'dnsRecords', 'autoConfigureBtn', 'verifyBtn', 'verifiedStatus']],
+        vertical: []
+    },
+    
+    // Increased values to prevent overlap
+    idealEdgeLength: 180,
+    nodeRepulsion: 6000,
+    nodeSeparation: 300,
+    edgeElasticity: 0.4,
+    
+    // Low gravity to allow expansion
+    gravity: 0.05,
+    gravityRange: 12.0,
+    
+    // Tighter compound gravity to keep parent nodes close
+    gravityCompound: 2.5,
+    gravityRangeCompound: 4.0,
+    
+    // Lower nesting factor to keep children closer to parents
+    nestingFactor: 0.15,
+    
+    // More iterations for better spacing
+    numIter: 6000,
+    coolingFactor: 0.92,
+    
+    // Pack components with more spacing between disconnected components
+    packComponents: true,
+    componentSpacing: 120,
+    tile: true,
+    tilingPaddingVertical: 10,
+    tilingPaddingHorizontal: 10,
+    
+    nodeDimensionsIncludeLabels: true,
+    uniformNodeDimensions: false
+}
             });
 
             // Click handler – open URL if exists, else show info

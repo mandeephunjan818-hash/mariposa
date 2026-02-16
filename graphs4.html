@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Mariposa Domain – Step Nodes with Fixed Size</title>
+    <script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+    <script src="https://unpkg.com/layout-base@2.0.1/layout-base.js"></script>
+    <script src="https://unpkg.com/cose-base@2.2.0/cose-base.js"></script>
+    <script src="https://unpkg.com/cytoscape-fcose@2.2.0/cytoscape-fcose.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+        }
+        #cy {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: linear-gradient(135deg, #fafafa 0%, #f0f2f5 100%);
+        }
+        .info {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 12px 20px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1e2b3a;
+            box-shadow: 0 8px 24px rgba(0, 20, 40, 0.15);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            max-width: 600px;
+        }
+        .info span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+            font-size: 12px;
+        }
+        .legend-doc { background: #e1f5e0; border-left: 4px solid #2e7d32; padding-left: 8px; }
+        .legend-nav { background: #ffe0b0; border-left: 4px solid #bf8f00; padding-left: 8px; }
+        .legend-dash { background: #ffd0d0; border-left: 4px solid #c62828; padding-left: 8px; }
+        .legend-page { background: #d0d0ff; border-left: 4px solid #283593; padding-left: 8px; }
+        .legend-input { background: #fff3e0; border: 2px dashed #f39c12; }
+        .legend-step { background: #f0f0f0; border-left: 4px solid #7f8c8d; padding-left: 8px; }
+    </style>
+</head>
+<body>
+    <div id="cy"></div>
+    <div class="info">
+        <span class="legend-doc">📘 Documentation</span>
+        <span class="legend-nav">🧭 Navbar</span>
+        <span class="legend-dash">📊 Dashboard</span>
+        <span class="legend-page">📄 Pages</span>
+        <span class="legend-input">✏️ Input field</span>
+        <span class="legend-step">📋 Step</span>
+    </div>
+
+    <script>
+        (function() {
+            const baseImageUrl = 'https://raw.githubusercontent.com/mandeephunjan818-hash/mariposa/refs/heads/main/images/';
+
+            const cy = cytoscape({
+                container: document.getElementById('cy'),
+                elements: [
+                    // ----- ORIGINAL UI NODES (same as before) -----
+                    { data: { id: 'n1', label: 'Domain Integration\n& Email Service', type: 'Main-doc', url: '#' } },
+                    { data: { id: 'updateInfoBtn', label: 'Update Information', type: 'doc', url: '#' } },
+                    { data: { id: 'createDedicatedDomainBtn', label: 'Create dedicated domain', type: 'doc', url: '#' } },
+                    { data: { id: 'dedicatedDomainInput', label: 'Enter domain name', type: 'doc', subtype: 'input', url: '#' } },
+                    { data: { id: 'dnsRecords', label: 'DNS Records (TXT, MX, …)', type: 'doc', url: '#' } },
+                    { data: { id: 'autoConfigureBtn', label: 'Auto‑configure DNS', type: 'doc', url: '#' } },
+                    { data: { id: 'verifyBtn', label: 'Verify', type: 'doc', url: '#' } },
+                    { data: { id: 'verifiedStatus', label: '✅ Verified', type: 'doc', url: '#' } },
+                    { data: { id: 'contactsPage', label: 'Contacts / Mailbox', type: 'doc', url: '#' } },
+                    { data: { id: 'contactName', label: 'Contact (email composer)', type: 'doc', url: '#' } },
+
+                    { data: { id: 'n2', label: 'Main Dashboard Container', type: 'dashboard', image: baseImageUrl + 'Domain_Setup_fg1.png' } },
+                    { data: { id: 'ProfileDashboard', label: 'Profile Dashboard', type: 'dashboard' } },
+                    { data: { id: 'ProfileSettingsDashboard', label: 'Profile Settings Dashboard', type: 'dashboard' } },
+
+                    { data: { id: 'NameN2', label: 'Main Dashboard', type: 'dashboard', parent: 'n2' } },
+                    { data: { id: 'ProfileDashboardName', label:'Profile Dashboard', type:'dashboard', parent:'ProfileDashboard' } },
+                    { data: { id: 'ProfileSettingsDashboardName', label: 'Profile Settings Dashboard', type: 'dashboard', parent: 'ProfileSettingsDashboard' } },
+
+                    { data: { id: 'nav1', label: 'Left Navbar', type: 'navbar' } },
+                    { data: { id: 'Nav2', label: 'Profile Navbar', type: 'navbar' } },
+                    { data: { id: 'Nav3', label: 'Profile Settings Navbar', type: 'navbar' } },
+
+                    { data: { id: 'NameNav1', label: 'Dashboard Navbar', type: 'navbar', parent: 'nav1' } },
+                    { data: { id: 'Nav2Name', label: 'Profile Navbar', type: 'navbar', parent: 'Nav2' } },
+                    { data: { id: 'Nav3Name', label: 'Profile Settings NavBar', type: 'navbar', parent: 'Nav3' } },
+
+                    { data: { id: 'NameNavN2', label: 'Main Dashboard Navbar', type: 'navbar', parent: 'n2' } },
+                    { data: { id: 'ProfileDashboardNav2', label: 'Profile Dashboard Navbar', type: 'navbar', parent: 'ProfileDashboard' } },
+                    { data: { id: 'ProfileSettingsDashboardNav3', label: 'Profile Settings Navbar', type: 'navbar', parent: 'ProfileSettingsDashboard' } },
+
+                    { data: { id: 'nav1Links', label: 'Links', type: 'navbar', parent: 'nav1' } },
+                    { data: { id: 'Nav2Links', label: 'Links', type: 'navbar', parent: 'Nav2' } },
+                    { data: { id: 'Nav3Links', label: 'Links', type: 'navbar', parent: 'Nav3' } },
+
+                    { data: { id: 'nav1link1', label: 'Click here to switch', type: 'navbar', parent: 'nav1Links' } },
+                    { data: { id: 'nav1link1Users', label: 'Organization Profiles', type: 'navbar', parent: 'nav1Links' } },
+                    { data: { id: 'Nav2Link1', label: 'Settings', type: 'navbar', parent: 'Nav2Links' } },
+                    { data: { id: 'Nav2Link2', label: 'Contacts', type: 'navbar', parent: 'Nav2Links' } },
+                    { data: { id: 'Nav3Link1', label: 'Business Profile', type: 'navbar', parent: 'Nav3Links' } },
+                    { data: { id: 'Nav3Link3', label: 'Back to Profile', type:'navbar', parent:'Nav3Links' } },
+                    { data: { id: 'emailServices', label: 'Email Services', type: 'navbar', parent: 'Nav3Links' } },
+
+                    // ----- STEP NODES with parent-child structure -----
+                    // Step 1
+                    { data: { id: 'step1Parent', type: 'stepParent' } },
+                    { data: { id: 'step1text', label: 'Step 1: Switch Account\n• Click "Click here" in left navbar\n• Select your account', type: 'step', parent: 'step1Parent' } },
+                    { data: { id: 'step1Name', label: 'Step 1', type: 'stepName', parent: 'step1Parent', image: baseImageUrl + 'Domain_Setup_fg1.png' } },
+                    
+                    // Step 2
+                    { data: { id: 'step2Parent', type: 'stepParent' } },
+                    { data: { id: 'step2text', label: 'Step 2: Add Branded Domain\n• Scroll to Settings\n• Click BusinessProfile\n• Enter domain, click Add', type: 'step', parent: 'step2Parent' } },
+                    { data: { id: 'step2Name', label: 'Step 2', type: 'stepName', parent: 'step2Parent', image: baseImageUrl + 'Domain_Setup_fg2.png' } },
+                    
+                    // Step 3
+                    { data: { id: 'step3Parent', type: 'stepParent' } },
+                    { data: { id: 'step3text', label: 'Step 3: Update Information\n• Return to BusinessProfile\n• Click Update information', type: 'step', parent: 'step3Parent' } },
+                    { data: { id: 'step3Name', label: 'Step 3', type: 'stepName', parent: 'step3Parent', image: baseImageUrl + 'Domain_Setup_fg3.png' } },
+                    
+                    // Step 4
+                    { data: { id: 'step4Parent', type: 'stepParent' } },
+                    { data: { id: 'step4text', label: 'Step 4: Create Dedicated Domain\n• Click Email services\n• Create dedicated domain\n• Enter subdomain', type: 'step', parent: 'step4Parent' } },
+                    { data: { id: 'step4Name', label: 'Step 4', type: 'stepName', parent: 'step4Parent', image: baseImageUrl + 'Domain_Setup_fg4.png' } },
+                    
+                    // Step 5
+                    { data: { id: 'step5Parent', type: 'stepParent' } },
+                    { data: { id: 'step5text', label: 'Step 5: Configure DNS\n• Auto‑configure recommended\n• Or add records manually\n• Click Verify', type: 'step', parent: 'step5Parent' } },
+                    { data: { id: 'step5Name', label: 'Step 5', type: 'stepName', parent: 'step5Parent', image: baseImageUrl + 'Domain_Setup_fg5.png' } },
+                    
+                    // Step 6
+                    { data: { id: 'step6Parent', type: 'stepParent' } },
+                    { data: { id: 'step6text', label: 'Step 6: Send Email\n• Go to Contacts\n• Click contact name\n• Compose with verified domain', type: 'step', parent: 'step6Parent' } },
+                    { data: { id: 'step6Name', label: 'Step 6', type: 'stepName', parent: 'step6Parent', image: baseImageUrl + 'Domain_Setup_fg6.png' } },
+                    
+                    // Step 7
+                    { data: { id: 'step7Parent', type: 'stepParent' } },
+                    { data: { id: 'step7text', label: 'Step 7: Update Info (cont.)', type: 'step', parent: 'step7Parent' } },
+                    { data: { id: 'step7Name', label: 'Step 7', type: 'stepName', parent: 'step7Parent', image: baseImageUrl + 'Domain_Setup_fg7.png' } },
+                    
+                    // Step 8
+                    { data: { id: 'step8Parent', type: 'stepParent' } },
+                    { data: { id: 'step8text', label: 'Step 8: Email Services', type: 'step', parent: 'step8Parent' } },
+                    { data: { id: 'step8Name', label: 'Step 8', type: 'stepName', parent: 'step8Parent', image: baseImageUrl + 'Domain_Setup_fg8.png' } },
+                    
+                    // Step 9
+                    { data: { id: 'step9Parent', type: 'stepParent' } },
+                    { data: { id: 'step9text', label: 'Step 9: Email Services (cont.)', type: 'step', parent: 'step9Parent' } },
+                    { data: { id: 'step9Name', label: 'Step 9', type: 'stepName', parent: 'step9Parent', image: baseImageUrl + 'Domain_Setup_fg9.png' } },
+                    
+                    // Step 10
+                    { data: { id: 'step10Parent', type: 'stepParent' } },
+                    { data: { id: 'step10text', label: 'Step 10: Create Domain', type: 'step', parent: 'step10Parent' } },
+                    { data: { id: 'step10Name', label: 'Step 10', type: 'stepName', parent: 'step10Parent', image: baseImageUrl + 'Domain_Setup_fg10.png' } },
+                    
+                    // Step 11
+                    { data: { id: 'step11Parent', type: 'stepParent' } },
+                    { data: { id: 'step11text', label: 'Step 11: Enter Domain', type: 'step', parent: 'step11Parent' } },
+                    { data: { id: 'step11Name', label: 'Step 11', type: 'stepName', parent: 'step11Parent', image: baseImageUrl + 'Domain_Setup_fg11.png' } },
+                    
+                    // Step 12
+                    { data: { id: 'step12Parent', type: 'stepParent' } },
+                    { data: { id: 'step12text', label: 'Step 12: Domain Cards', type: 'step', parent: 'step12Parent' } },
+                    { data: { id: 'step12Name', label: 'Step 12', type: 'stepName', parent: 'step12Parent', image: baseImageUrl + 'Domain_Setup_fg12.png' } },
+                    
+                    // Step 13
+                    { data: { id: 'step13Parent', type: 'stepParent' } },
+                    { data: { id: 'step13text', label: 'Step 13: DNS Records', type: 'step', parent: 'step13Parent' } },
+                    { data: { id: 'step13Name', label: 'Step 13', type: 'stepName', parent: 'step13Parent', image: baseImageUrl + 'Domain_Setup_fg13.png' } },
+                    
+                    // Step 14
+                    { data: { id: 'step14Parent', type: 'stepParent' } },
+                    { data: { id: 'step14text', label: 'Step 14: Verified', type: 'step', parent: 'step14Parent' } },
+                    { data: { id: 'step14Name', label: 'Step 14', type: 'stepName', parent: 'step14Parent', image: baseImageUrl + 'Domain_Setup_fg14.png' } },
+                    
+                    // Step 15
+                    { data: { id: 'step15Parent', type: 'stepParent' } },
+                    { data: { id: 'step15text', label: 'Step 15: Back to Profile', type: 'step', parent: 'step15Parent' } },
+                    { data: { id: 'step15Name', label: 'Step 15', type: 'stepName', parent: 'step15Parent', image: baseImageUrl + 'Domain_Setup_fg15.png' } },
+                    
+                    // Step 16
+                    { data: { id: 'step16Parent', type: 'stepParent' } },
+                    { data: { id: 'step16text', label: 'Step 16: Profile Dashboard', type: 'step', parent: 'step16Parent' } },
+                    { data: { id: 'step16Name', label: 'Step 16', type: 'stepName', parent: 'step16Parent', image: baseImageUrl + 'Domain_Setup_fg16.png' } },
+                    
+                    // Step 17
+                    { data: { id: 'step17Parent', type: 'stepParent' } },
+                    { data: { id: 'step17text', label: 'Step 17: Compose Email', type: 'step', parent: 'step17Parent' } },
+                    { data: { id: 'step17Name', label: 'Step 17', type: 'stepName', parent: 'step17Parent', image: baseImageUrl + 'Domain_Setup_fg17.png' } },
+
+                    // ----- EDGES (original UI flow) -----
+                    { data: { id: 'e1', source: 'n1', target: 'NameNavN2', label: 'go to dashboard' } },
+                    { data: { id: 'e2', source: 'NameNavN2', target: 'nav1link1', label: 'click to switch' } },
+                    { data: { id: 'e3', source: 'nav1link1', target: 'nav1link1Users', label: 'select profile' } },
+                    { data: { id: 'e4', source: 'nav1link1Users', target: 'ProfileDashboardNav2', label: 'go to profile' } },
+                    { data: { id: 'e5', source: 'ProfileDashboardNav2', target: 'Nav2Link1', label: 'go to settings' } },
+                    { data: { id: 'e6', source: 'Nav2Link1', target: 'ProfileSettingsDashboardNav3', label: 'settings navbar' } },
+                    { data: { id: 'e7', source: 'ProfileSettingsDashboardNav3', target: 'Nav3Link1', label: 'Business Profile' } },
+                    { data: { id: 'e8', source: 'Nav3Link1', target: 'updateInfoBtn', label: 'Update info' } },
+                    { data: { id: 'e9', source: 'updateInfoBtn', target: 'emailServices', label: 'Email services' } },
+                    { data: { id: 'e10', source: 'emailServices', target: 'createDedicatedDomainBtn', label: 'Create domain' } },
+                    { data: { id: 'e11', source: 'createDedicatedDomainBtn', target: 'dedicatedDomainInput', label: 'enter domain' } },
+                    { data: { id: 'e12', source: 'dedicatedDomainInput', target: 'dnsRecords', label: 'configure DNS' } },
+                    { data: { id: 'e13', source: 'dnsRecords', target: 'autoConfigureBtn', label: 'auto‑configure' } },
+                    { data: { id: 'e14', source: 'autoConfigureBtn', target: 'verifyBtn', label: 'verify' } },
+                    { data: { id: 'e15', source: 'verifyBtn', target: 'verifiedStatus', label: 'success' } },
+                    { data: { id: 'e16', source: 'verifiedStatus', target: 'Nav3Link3', label: 'back to settings' } },
+                    { data: { id: 'e18', source: 'Nav3Link3', target:'ProfileDashboardNav2', label:'return to profile' } },
+                    { data: { id: 'e19', source: 'ProfileDashboardNav2', target: 'Nav2Link2', label:'to contacts' } },
+                    { data: { id: 'e20', source: 'Nav2Link2', target:'contactsPage', label:'contacts page' } },
+                    { data: { id: 'e17', source: 'contactsPage', target: 'contactName', label: 'compose email' } },
+
+                    // ----- ASSOCIATION EDGES (step -> UI node) -----
+                    { data: { id: 's1', source: 'step1Parent', target: 'nav1link1', label: 'Step 1' } },
+                    { data: { id: 's2', source: 'step2Parent', target: 'Nav2Link1', label: 'Step 2' } },
+                    { data: { id: 's3', source: 'step3Parent', target: 'updateInfoBtn', label: 'Step 3' } },
+                    { data: { id: 's4', source: 'step4Parent', target: 'emailServices', label: 'Step 4' } },
+                    { data: { id: 's5', source: 'step5Parent', target: 'autoConfigureBtn', label: 'Step 5' } },
+                    { data: { id: 's6', source: 'step6Parent', target: 'contactsPage', label: 'Step 6' } },
+                    { data: { id: 's7', source: 'step7Parent', target: 'updateInfoBtn', label: 'Step 7' } },
+                    { data: { id: 's8', source: 'step8Parent', target: 'emailServices', label: 'Step 8' } },
+                    { data: { id: 's9', source: 'step9Parent', target: 'emailServices', label: 'Step 9' } },
+                    { data: { id: 's10', source: 'step10Parent', target: 'createDedicatedDomainBtn', label: 'Step 10' } },
+                    { data: { id: 's11', source: 'step11Parent', target: 'dedicatedDomainInput', label: 'Step 11' } },
+                    { data: { id: 's12', source: 'step12Parent', target: 'dnsRecords', label: 'Step 12' } },
+                    { data: { id: 's13', source: 'step13Parent', target: 'dnsRecords', label: 'Step 13' } },
+                    { data: { id: 's14', source: 'step14Parent', target: 'verifiedStatus', label: 'Step 14' } },
+                    { data: { id: 's15', source: 'step15Parent', target: 'Nav3Link3', label: 'Step 15' } },
+                    { data: { id: 's16', source: 'step16Parent', target: 'ProfileDashboardNav2', label: 'Step 16' } },
+                    { data: { id: 's17', source: 'step17Parent', target: 'contactName', label: 'Step 17' } }
+                ],
+
+                style: [
+                    // ----- BASE NODE -----
+                    {
+                        selector: 'node',
+                        style: {
+                            'shape': 'round-rectangle',
+                            'text-halign': 'center',
+                            'text-valign': 'center',
+                            'label': 'data(label)',
+                            'width': 'label',
+                            'height': 'label',
+                            'padding': '12px',
+                            'text-wrap': 'wrap',
+                            'text-max-width': '130px',
+                            'font-size': '10px',
+                            'font-weight': '500',
+                            'color': '#2c3e50',
+                            'background-color': '#ecf0f1',
+                            'border-width': 2,
+                            'border-color': '#bdc3c7'
+                        }
+                    },
+                    // ----- MAIN-DOC (solid red) -----
+                    {
+                        selector: 'node[type = "Main-doc"]',
+                        style: {
+                            'background-color': '#FF0000',
+                            'border-color': '#b71c1c',
+                            'border-width': 3,
+                            'font-weight': 'bold',
+                            'color': '#ffffff',
+                            'text-outline-color': '#b71c1c',
+                            'text-outline-width': 1
+                        }
+                    },
+                    // ----- DOC (light green) -----
+                    {
+                        selector: 'node[type = "doc"]',
+                        style: {
+                            'background-color': '#e1f5e0',
+                            'border-color': '#2e7d32',
+                            'border-width': 2
+                        }
+                    },
+                    // ----- NAVBAR (light orange) -----
+                    {
+                        selector: 'node[type = "navbar"]',
+                        style: {
+                            'background-color': '#ffe0b0',
+                            'border-color': '#bf8f00',
+                            'border-width': 2
+                        }
+                    },
+                    // ----- DASHBOARD (light red/pink with image) -----
+                    {
+                        selector: 'node[type = "dashboard"]',
+                        style: {
+                            'background-color': '#ffd0d0',
+                            'background-image': 'data(image)',
+                            'background-fit': 'contain',
+                            'background-clip': 'none',
+                            'border-color': '#c62828',
+                            'border-width': 3
+                        }
+                    },
+                    // ----- STEP TEXT NODES -----
+                    {
+                        selector: 'node[type = "step"]',
+                        style: {
+                            'background-color': '#f0f0f0',
+                            'border-color': '#7f8c8d',
+                            'border-width': 2,
+                            'border-style': 'solid',
+                            'font-size': '9px',
+                            'color': '#1e2b3a',
+                            'text-outline-color': '#ffffff',
+                            'text-outline-width': 1,
+                            'text-wrap': 'wrap',
+                            'text-max-width': '140px',
+                            'text-valign': 'center',
+                            'text-halign': 'center'
+                        }
+                    },
+                    // ----- STEP NAME NODES (with image) -----
+                    {
+                        selector: 'node[type = "stepName"]',
+                        style: {
+                            'background-color': '#e8e8e8',
+                            'background-image': 'data(image)',
+                            'background-fit': 'cover',
+                            'background-image-opacity': 0.4,
+                            'border-color': '#7f8c8d',
+                            'border-width': 2,
+                            'border-style': 'solid',
+                            'font-size': '10px',
+                            'font-weight': 'bold',
+                            'color': '#2c3e50',
+                            'text-outline-color': '#ffffff',
+                            'text-outline-width': 2,
+                            'width': 80,
+                            'height': 60
+                        }
+                    },
+                    // ----- STEP PARENT NODES (container only) -----
+                    {
+                        selector: 'node[type = "stepParent"]',
+                        style: {
+                            'background-color': '#f5f5f5',
+                            'border-width': 2,
+                            'border-color': '#95a5a6',
+                            'border-style': 'dashed',
+                            'padding': '20px'
+                        }
+                    },
+                    // ----- INPUT FIELD (dashed orange) -----
+                    {
+                        selector: 'node[subtype = "input"]',
+                        style: {
+                            'border-width': 3,
+                            'border-style': 'dashed',
+                            'border-color': '#f39c12',
+                            'background-color': '#fff3e0'
+                        }
+                    },
+                    // ----- PARENT NODES (containers) -----
+                    {
+                        selector: ':parent',
+                        style: {
+                            'background-opacity': 0.15,
+                            'background-color': '#34495e',
+                            'border-width': 2,
+                            'border-color': '#2c3e50',
+                            'border-style': 'solid',
+                            'font-weight': 'bold',
+                            'text-valign': 'top',
+                            'text-halign': 'center',
+                            'padding': '14px',
+                            'font-size': '9px',
+                            'color': '#2c3e50'
+                        }
+                    },
+                    // ----- UI EDGES (solid) -----
+                    {
+                        selector: 'edge[id^="e"]',
+                        style: {
+                            'width': 2,
+                            'line-color': '#95a5a6',
+                            'target-arrow-color': '#95a5a6',
+                            'target-arrow-shape': 'triangle',
+                            'curve-style': 'bezier',
+                            'label': 'data(label)',
+                            'font-size': '8px',
+                            'font-weight': '500',
+                            'color': '#2c3e50',
+                            'text-background-color': '#ffffff',
+                            'text-background-opacity': 0.95,
+                            'text-background-padding': '2px',
+                            'text-border-color': '#d0d0d0',
+                            'text-border-width': 1,
+                            'text-border-opacity': 0.8,
+                            'text-valign': 'top',
+                            'text-margin-y': -8,
+                            'edge-text-rotation': 'autorotate'
+                        }
+                    },
+                    // ----- ASSOCIATION EDGES (dashed) -----
+                    {
+                        selector: 'edge[id^="s"]',
+                        style: {
+                            'width': 1.5,
+                            'line-color': '#7f8c8d',
+                            'line-style': 'dashed',
+                            'target-arrow-color': '#7f8c8d',
+                            'target-arrow-shape': 'circle',
+                            'curve-style': 'bezier',
+                            'label': 'data(label)',
+                            'font-size': '7px',
+                            'font-weight': '400',
+                            'color': '#2c3e50',
+                            'text-background-color': '#ffffff',
+                            'text-background-opacity': 0.9,
+                            'text-background-padding': '2px',
+                            'text-border-color': '#bdc3c7',
+                            'text-border-width': 1,
+                            'text-border-opacity': 0.5,
+                            'text-valign': 'top',
+                            'text-margin-y': -8,
+                            'edge-text-rotation': 'autorotate'
+                        }
+                    }
+                ],
+
+                layout: {
+                    name: 'fcose',
+                    quality: 'proof',
+                    randomize: true,
+                    animate: true,
+                    animationDuration: 1000,
+                    
+                    // Automatic spacing parameters
+                    nodeRepulsion: 4500,
+                    edgeElasticity: 0.45,
+                    nestingFactor: 0.1,
+                    gravity: 0.25,
+                    numIter: 2500,
+                    tile: true,
+                    tilingPaddingVertical: 10,
+                    tilingPaddingHorizontal: 10,
+                    gravityRangeCompound: 1.5,
+                    gravityCompound: 1.0,
+                    gravityRange: 3.8,
+                    initialEnergyOnIncremental: 0.5,
+                    nodeSeparation: 150,
+                    idealEdgeLength: 150
+                }
+            });
+
+            cy.on('tap', 'node', function(evt) {
+                const node = evt.target;
+                const url = node.data('url');
+                if (url && url !== '#') {
+                    window.open(url, '_blank');
+                } else {
+                    const type = node.data('type') || 'unknown';
+                    const parent = node.data('parent') || 'none';
+                    alert(
+                        'Node: ' + node.data('label') + 
+                        '\nType: ' + type + 
+                        '\nParent: ' + parent +
+                        '\nID: ' + node.id()
+                    );
+                }
+            });
+
+            cy.on('layoutstop', function() {
+                cy.fit(undefined, 80);
+            });
+        })();
+    </script>
+</body>
+</html>
